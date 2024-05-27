@@ -90,18 +90,18 @@ Route::get('/about', function() {
 
 Route::redirect('log-in', 'login');
 
-Route::group(['middleware' => 'auth'], function() {
-    Route::group(['prefix' => 'app'], function() {
-        Route::get('/dashboard', [DashboardController::class])->name('dashboard');
-        Route::resource('/tasks', TaskController::class);
+Route::middleware('auth')->group(function(){
+
+    Route::group([],function(){
+        Route::get('/app/dashboard',DashboardController::class)->name('dashboard');
+        Route::resource('/app/tasks', TaskController::class);
     });
 
-    Route::group(['prefix' => 'admin', 'middleware' => 'is_admin'], function() {
-        Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, '__invoke']);
-        Route::get('/stats', [StatsController::class, '__invoke']);
+    Route::prefix('admin')->middleware('is_admin')->group(function(){
+        Route::get('dashboard',AdminDashboardController::class);
+        Route::get('stats',StatsController::class);
+
     });
-
-
 });
 
 
