@@ -80,4 +80,29 @@ use Illuminate\Support\Facades\Route;
 
 // One more task is in routes/api.php
 
+Route::get('/', [HomeController::class, 'index']);
+
+Route::get('/user/{name}', [UserController::class, 'show']);
+
+Route::get('/about', function() {
+    return view('pages/about');
+})->name('about');
+
+Route::redirect('log-in', 'login');
+
+Route::group(['middleware' => 'auth'], function() {
+    Route::group(['prefix' => 'app'], function() {
+        Route::get('/dashboard', [DashboardController::class])->name('dashboard');
+        Route::resource('/tasks', TaskController::class);
+    });
+
+    Route::group(['prefix' => 'admin', 'middleware' => 'is_admin'], function() {
+        Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, '__invoke']);
+        Route::get('/stats', [StatsController::class, '__invoke']);
+    });
+
+
+});
+
+
 require __DIR__.'/auth.php';
