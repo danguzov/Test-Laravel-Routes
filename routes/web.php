@@ -98,8 +98,8 @@ Route::middleware('auth')->group(function(){
     });
 
     Route::prefix('admin')->middleware('is_admin')->group(function(){
-        Route::get('dashboard',AdminDashboardController::class);
-        Route::get('stats',StatsController::class);
+        Route::get('dashboard',AdminDashboardController::class, '__invoke');
+        Route::get('stats',StatsController::class, '__invoke');
 
     });
 });
